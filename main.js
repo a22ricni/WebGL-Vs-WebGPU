@@ -22,4 +22,16 @@ camera.position.set(0, 2, 5);
 const gridHelper = new THREE.GridHelper(15, 50);
 scene.add(gridHelper);
 
-renderer.render(scene, camera);
+const geometry = new THREE.BoxGeometry();
+const material = new THREE.MeshBasicMaterial({color: 0x00FF00});
+const box = new THREE.Mesh(geometry, material);
+
+scene.add(box);
+
+function animate(time){
+    box.rotation.x = time / 1000;
+    box.rotation.y = time / 1000;
+    renderer.render(scene, camera);
+}
+
+renderer.setAnimationLoop(animate);
