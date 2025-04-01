@@ -1,16 +1,28 @@
 <!DOCTYPE html>
-<html lang = "sv">
+<html lang="sv">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Test Three.js app!</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Babylon.js using WebGL</title>
         <style>
+            html,
             body {
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
                 margin: 0;
+                padding: 0;
+            }
+
+            #renderCanvas {
+                width: 100%;
+                height: 100%;
+                touch-action: none;
             }
         </style>
     </head>
     <body>
-        <script src="/main.js" type="module"></script>
+        <canvas id="renderCanvas"></canvas>
+        <script src="/Babylon-WebGPU.js" type="module"></script>
     </body>
 </html>
