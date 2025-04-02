@@ -19,11 +19,14 @@ scene.add(axesHelper);
 
 camera.position.set(0, 2, 5);
 
+const light = new THREE.HemisphereLight(0xFFFFFF, 0x000000, 4);
+scene.add(light);
+
 const gridHelper = new THREE.GridHelper(15, 50);
 scene.add(gridHelper);
 
 const geometry = new THREE.BoxGeometry();
-const material = new THREE.MeshBasicMaterial({color: 0x00FF00});
+const material = new THREE.MeshPhongMaterial({color: 0x00FF00});
 const box = new THREE.Mesh(geometry, material);
 
 scene.add(box);
