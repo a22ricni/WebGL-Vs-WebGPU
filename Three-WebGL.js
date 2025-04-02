@@ -17,7 +17,7 @@ const camera = new THREE.PerspectiveCamera(
 const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
 
-camera.position.set(0, 2, 10);
+camera.position.set(0, 2, 1000);
 
 const light = new THREE.HemisphereLight(0xffffff, 0x000000, 4);
 scene.add(light);
@@ -27,20 +27,22 @@ scene.add(gridHelper);
 
 const geometry = new THREE.BoxGeometry();
 const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
-let boxArray = [];
+const mesh = new THREE.InstancedMesh(geometry, material, 1000);
+scene.add(mesh);
 
-for (let i = 0; i < 2; i++) {
-    boxArray.push(new THREE.Mesh(geometry, material));
-    boxArray[i].position.set(Math.random() * -10 + 5, 0, 0);
-    scene.add(boxArray[i]);
+const meshPosition = new THREE.Object3D();
+for (let i = 0; i < 1000; i++) {
+    meshPosition.position.x = Math.random() * 2000 - 1000;
+    meshPosition.position.y = 1;
+    meshPosition.position.z = 1;
+
+    meshPosition.updateMatrix();
+    mesh.setMatrixAt(i, meshPosition.matrix);
 }
 
+
 function animate(time) {
-    for (let i = 0; i < boxArray.length; i++) {
-        boxArray[i].rotation.x = time / 1000;
-        boxArray[i].rotation.y = time / 1000;
-        renderer.render(scene, camera);
-    }
+    renderer.render(scene, camera);
 }
 
 renderer.setAnimationLoop(animate);
