@@ -1,9 +1,8 @@
-import { Vector3 } from "babylonjs";
 import * as THREE from "three";
 
-const amountOfCubes = 100;
-var matrix = new THREE.Matrix4()
-var position = new THREE.Vector3()
+const amountOfCubes = 10000;
+var matrix = new THREE.Matrix4();
+var position = new THREE.Vector3();
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -18,8 +17,7 @@ const camera = new THREE.PerspectiveCamera(
     10000
 );
 
-camera.position.set(0, 0, 500);
-/* camera.position.set(0, 0, 1450); */
+camera.position.set(0, 0, 1200);
 
 const light = new THREE.HemisphereLight(0xffffff, 0x000000, 4);
 scene.add(light);
@@ -31,30 +29,34 @@ scene.add(mesh);
 
 let meshPosition = new THREE.Object3D();
 for (let i = 0; i < amountOfCubes; i++) {
-    /*     meshPosition.position.x = Math.random() * 1000 - 500;
-    meshPosition.position.y = Math.random() * 1000 - 500;
-    meshPosition.position.z = Math.random() * 1500 - 750; */
     meshPosition.position.set(
-        Math.random() * 300 - 150,
-        Math.random() * 300 - 150,
-        Math.random() * 300 - 150
+        Math.random() * 1000 - 500,
+        Math.random() * 1000 - 500,
+        Math.random() * 1000 - 500
     );
 
     meshPosition.updateMatrix();
     mesh.setMatrixAt(i, meshPosition.matrix);
 }
 
-function animate(time) {
-    /*         meshPosition.position.x = 10
-        meshPosition.position.y = 10
-        meshPosition.position.z = 10 */
+let factor = 1.01;
+let distance = new THREE.Vector3(0, 0, 0);
+function animate() {
     for (let i = 0; i < amountOfCubes; i++) {
-        mesh.getMatrixAt(i, matrix)
+        mesh.getMatrixAt(i, matrix);
 
-        position.setFromMatrixPosition(matrix)
-        position.x *= 1.001
-        position.y *= 1.001
-        matrix.setPosition(position)
+        position.setFromMatrixPosition(matrix);
+
+        if (position.distanceTo(distance) >= 500) {
+            factor = 0.99;
+        }
+        if (position.distanceTo(distance) <= 1) {
+            factor = 1.01;
+        }
+        position.x *= factor;
+        position.y *= factor;
+        position.z *= factor;
+        matrix.setPosition(position);
 
         mesh.setMatrixAt(i, matrix);
     }
