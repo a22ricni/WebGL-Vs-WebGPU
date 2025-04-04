@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-const amountOfCubes = 10000;
+const amountOfCubes = 100000;
 var matrix = new THREE.Matrix4();
 var position = new THREE.Vector3();
 const renderer = new THREE.WebGLRenderer();

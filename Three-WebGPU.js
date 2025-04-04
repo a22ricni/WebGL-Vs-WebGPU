@@ -1,5 +1,8 @@
 import * as THREE from "three/webgpu";
 
+const amountOfCubes = 100000;
+var matrix = new THREE.Matrix4();
+var position = new THREE.Vector3();
 const renderer = new THREE.WebGPURenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -11,26 +14,54 @@ const camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
     0.1,
-    1000
+    10000
 );
 
-const axesHelper = new THREE.AxesHelper(5);
-scene.add(axesHelper);
+camera.position.set(0, 0, 1150);
 
-camera.position.set(0, 2, 5);
-
-const gridHelper = new THREE.GridHelper(15, 50);
-scene.add(gridHelper);
+const light = new THREE.HemisphereLight(0xffffff, 0x000000, 4);
+scene.add(light);
 
 const geometry = new THREE.BoxGeometry();
-const material = new THREE.MeshBasicMaterial({color: 0x00FF00});
-const box = new THREE.Mesh(geometry, material);
+const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+const mesh = new THREE.InstancedMesh(geometry, material, amountOfCubes);
+scene.add(mesh);
 
-scene.add(box);
+let meshPosition = new THREE.Object3D();
+for (let i = 0; i < amountOfCubes; i++) {
+    meshPosition.position.set(
+        Math.random() * 1000 - 500,
+        Math.random() * 1000 - 500,
+        Math.random() * 1000 - 500
+    );
 
-function animate(time){
-    box.rotation.x = time / 1000;
-    box.rotation.y = time / 1000;
+    meshPosition.updateMatrix();
+    mesh.setMatrixAt(i, meshPosition.matrix);
+}
+
+let factor = 1.01;
+let distance = new THREE.Vector3(0, 0, 0);
+function animate() {
+    for (let i = 0; i < amountOfCubes; i++) {
+        mesh.getMatrixAt(i, matrix);
+
+        position.setFromMatrixPosition(matrix);
+
+        if (position.distanceTo(distance) >= 500) {
+            factor = 0.99;
+        }
+        if (position.distanceTo(distance) <= 1) {
+            factor = 1.01;
+        }
+        position.x *= factor;
+        position.y *= factor;
+        position.z *= factor;
+        matrix.setPosition(position);
+
+        mesh.setMatrixAt(i, matrix);
+    }
+
+    mesh.instanceMatrix.needsUpdate = true;
     renderer.render(scene, camera);
 }
 
