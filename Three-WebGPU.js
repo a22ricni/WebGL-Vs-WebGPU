@@ -1,6 +1,6 @@
 import * as THREE from "three/webgpu";
 
-const amountOfCubes = 100000;
+const amountOfCubes = 100000
 var matrix = new THREE.Matrix4();
 var position = new THREE.Vector3();
 const renderer = new THREE.WebGPURenderer();
@@ -17,7 +17,7 @@ const camera = new THREE.PerspectiveCamera(
     10000
 );
 
-camera.position.set(0, 0, 1150);
+camera.position.set(0, 0, 1200);
 
 const light = new THREE.HemisphereLight(0xffffff, 0x000000, 4);
 scene.add(light);
@@ -27,22 +27,21 @@ const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
 const mesh = new THREE.InstancedMesh(geometry, material, amountOfCubes);
 scene.add(mesh);
 
-let meshPosition = new THREE.Object3D();
 for (let i = 0; i < amountOfCubes; i++) {
-    meshPosition.position.set(
+    position.set(
         Math.random() * 1000 - 500,
         Math.random() * 1000 - 500,
         Math.random() * 1000 - 500
     );
 
-    meshPosition.updateMatrix();
-    mesh.setMatrixAt(i, meshPosition.matrix);
+    matrix.setPosition(position);
+    mesh.setMatrixAt(i, matrix);
 }
 
 let factor = 1.01;
 let distance = new THREE.Vector3(0, 0, 0);
 function animate() {
-    for (let i = 0; i < amountOfCubes; i++) {
+    /*     for (let i = 0; i < amountOfCubes; i++) {
         mesh.getMatrixAt(i, matrix);
 
         position.setFromMatrixPosition(matrix);
@@ -59,9 +58,11 @@ function animate() {
         matrix.setPosition(position);
 
         mesh.setMatrixAt(i, matrix);
-    }
+    } */
 
-    mesh.instanceMatrix.needsUpdate = true;
+    mesh.rotation.x += 0.01;
+    mesh.rotation.y += 0.01;
+    /*     mesh.instanceMatrix.needsUpdate = true; */
     renderer.render(scene, camera);
 }
 
