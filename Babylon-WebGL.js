@@ -3,16 +3,16 @@ import * as BABYLON from "babylonjs";
 const canvas = document.getElementById("renderCanvas");
 const engine = new BABYLON.Engine(canvas);
 
-const createScene = function () {
+function createScene() {
     const scene = new BABYLON.Scene(engine);
-    let amount = 1
+    let amount = 1000000
 
     //scene.createDefaultCameraOrLight(true, false, true);
     scene.createDefaultLight();
 
     const camera = new BABYLON.UniversalCamera(
         "uCamera",
-        new BABYLON.Vector3(0, 1, -5),
+        new BABYLON.Vector3(0, 1, -50),
         scene
     );
 
@@ -23,7 +23,7 @@ const createScene = function () {
     let matricesData = new Float32Array(16 * amount);
 
     for (var i = 0; i < amount; i++) {
-        var matrix = BABYLON.Matrix.Translation(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1)
+        var matrix = BABYLON.Matrix.Translation(Math.random() * 20 - 10, Math.random() * 20 - 10, Math.random() * 20 - 10)
         matrix.copyToArray(matricesData, i * 16);
            
     }
