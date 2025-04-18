@@ -5,7 +5,7 @@ const engine = new BABYLON.Engine(canvas);
 
 function createScene() {
     const scene = new BABYLON.Scene(engine);
-    let amount = 1000000
+    let amount = 100000
 
     //scene.createDefaultCameraOrLight(true, false, true);
     scene.createDefaultLight();
@@ -45,7 +45,6 @@ function createScene() {
     ground.material = new BABYLON.StandardMaterial();
     ground.material.wireframe = true;
 
-    //box.thinInstanceSetBuffer(BABYLON.Matrix.Translation(Math.random() * 2 - 1, 2, 0), amount, 16)
 
     return scene;
 };

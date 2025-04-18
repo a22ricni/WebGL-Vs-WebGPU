@@ -8,7 +8,6 @@ function createScene () {
     const scene = new BABYLON.Scene(engine);
     let amount = 6
 
-    //scene.createDefaultCameraOrLight(true, false, true);
     scene.createDefaultLight();
 
     const camera = new BABYLON.UniversalCamera(
@@ -31,22 +30,10 @@ function createScene () {
 
     box.thinInstanceSetBuffer("matrix", matricesData, 16);
 
-    const ground = BABYLON.MeshBuilder.CreateGround("myGround", {
-        width: 3,
-        height: 3,
-        subdivisionsX: 10,
-        subdivisionsY: 20,
-    });
-
     scene.registerBeforeRender(function () {
         box.rotation.x += 0.01;
         box.rotation.y += 0.01;
     });
-
-    ground.material = new BABYLON.StandardMaterial();
-    ground.material.wireframe = true;
-
-    //box.thinInstanceSetBuffer(BABYLON.Matrix.Translation(Math.random() * 2 - 1, 2, 0), amount, 16)
 
     return scene;
 };
