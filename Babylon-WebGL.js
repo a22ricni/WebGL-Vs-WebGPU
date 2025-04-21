@@ -2,10 +2,15 @@ import * as BABYLON from "babylonjs";
 
 const canvas = document.getElementById("renderCanvas");
 const engine = new BABYLON.Engine(canvas);
+let frames = 0;
+let prevTime = performance.now();
+let FPS = "";
+let amountOfFPS = 0;
+let stopGetMoreData = true;
 
 function createScene() {
     const scene = new BABYLON.Scene(engine);
-    let amount = 100000
+    let amount = 100000;
 
     //scene.createDefaultCameraOrLight(true, false, true);
     scene.createDefaultLight();
@@ -23,9 +28,12 @@ function createScene() {
     let matricesData = new Float32Array(16 * amount);
 
     for (var i = 0; i < amount; i++) {
-        var matrix = BABYLON.Matrix.Translation(Math.random() * 20 - 10, Math.random() * 20 - 10, Math.random() * 20 - 10)
+        var matrix = BABYLON.Matrix.Translation(
+            Math.random() * 20 - 10,
+            Math.random() * 20 - 10,
+            Math.random() * 20 - 10
+        );
         matrix.copyToArray(matricesData, i * 16);
-           
     }
 
     box.thinInstanceSetBuffer("matrix", matricesData, 16);
@@ -45,13 +53,33 @@ function createScene() {
     ground.material = new BABYLON.StandardMaterial();
     ground.material.wireframe = true;
 
-
     return scene;
-};
+}
 
 const scene = createScene();
 
 engine.runRenderLoop(function () {
+    frames++;
+    const time = performance.now();
+
+    if (time >= prevTime + 1000) {
+        FPS += Math.round((frames * 1000) / (time - prevTime)) + "\n";
+        frames = 0;
+        prevTime = time;
+        amountOfFPS++;
+    }
+    if (amountOfFPS == 5 && stopGetMoreData == true) {
+        stopGetMoreData = false;
+        let anchor = document.createElement("a");
+        let fileName = `Babylon_WebGL_Data.csv`;
+        anchor.setAttribute(
+            "href",
+            "data:text/plain;charset=utf-8," + encodeURI(FPS)
+        );
+        anchor.setAttribute("download", fileName);
+        document.body.appendChild(anchor);
+        anchor.click();
+    }
     scene.render();
 });
 

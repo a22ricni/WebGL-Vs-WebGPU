@@ -3,10 +3,15 @@ import * as BABYLON from "babylonjs";
 const canvas = document.getElementById("renderCanvas");
 const engine = new BABYLON.WebGPUEngine(canvas);
 await engine.initAsync();
+let frames = 0;
+let prevTime = performance.now();
+let FPS = "";
+let amountOfFPS = 0;
+let stopGetMoreData = true;
 
 function createScene () {
     const scene = new BABYLON.Scene(engine);
-    let amount = 6
+    let amount = 100000
 
     scene.createDefaultLight();
 
@@ -41,6 +46,27 @@ function createScene () {
 const scene = createScene();
 
 engine.runRenderLoop(function () {
+    frames++;
+    const time = performance.now();
+
+    if (time >= prevTime + 1000) {
+        FPS += Math.round((frames * 1000) / (time - prevTime)) + "\n";
+        frames = 0;
+        prevTime = time;
+        amountOfFPS++;
+    }
+    if (amountOfFPS == 5 && stopGetMoreData == true) {
+        stopGetMoreData = false;
+        let anchor = document.createElement("a");
+        let fileName = `Babylon_WebGPU_Data.csv`;
+        anchor.setAttribute(
+            "href",
+            "data:text/plain;charset=utf-8," + encodeURI(FPS)
+        );
+        anchor.setAttribute("download", fileName);
+        document.body.appendChild(anchor);
+        anchor.click();
+    }
     scene.render();
 });
 

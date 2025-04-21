@@ -7,7 +7,7 @@ let frames = 0;
 let prevTime = performance.now();
 let FPS = "";
 let amountOfFPS = 0;
-let stopGetMoreData = true
+let stopGetMoreData = true;
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -54,10 +54,13 @@ function animate() {
         amountOfFPS++;
     }
     if (amountOfFPS == 5 && stopGetMoreData == true) {
-        stopGetMoreData = false
+        stopGetMoreData = false;
         let anchor = document.createElement("a");
         let fileName = `Three_WebGL_Data.csv`;
-        anchor.setAttribute("href", 'data:text/plain;charset=utf-8,' + encodeURI(FPS));
+        anchor.setAttribute(
+            "href",
+            "data:text/plain;charset=utf-8," + encodeURI(FPS)
+        );
         anchor.setAttribute("download", fileName);
         document.body.appendChild(anchor);
         anchor.click();
