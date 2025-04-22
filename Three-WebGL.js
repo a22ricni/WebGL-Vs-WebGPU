@@ -43,27 +43,31 @@ for (let i = 0; i < amountOfCubes; i++) {
     cube.setMatrixAt(i, matrix);
 }
 
-function animate() {
-    frames++;
-    const time = performance.now();
+window.dispatchEvent(new CustomEvent("allCubesIsLoaded"));
 
-    if (time >= prevTime + 1000) {
-        FPS += Math.round((frames * 1000) / (time - prevTime)) + "\n";
-        frames = 0;
-        prevTime = time;
-        amountOfFPS++;
-    }
-    if (amountOfFPS == 5 && stopGetMoreData == true) {
-        stopGetMoreData = false;
-        let anchor = document.createElement("a");
-        let fileName = `Three_WebGL_Data.csv`;
-        anchor.setAttribute(
-            "href",
-            "data:text/plain;charset=utf-8," + encodeURI(FPS)
-        );
-        anchor.setAttribute("download", fileName);
-        document.body.appendChild(anchor);
-        anchor.click();
+function animate() {
+    if (FPSTracker == true) {
+        frames++;
+        const time = performance.now();
+
+        if (time >= prevTime + 1000) {
+            FPS += Math.round((frames * 1000) / (time - prevTime)) + "\n";
+            frames = 0;
+            prevTime = time;
+            amountOfFPS++;
+        }
+        if (amountOfFPS == 5 && stopGetMoreData == true) {
+            stopGetMoreData = false;
+            let anchor = document.createElement("a");
+            let fileName = `Three_WebGL_Data.csv`;
+            anchor.setAttribute(
+                "href",
+                "data:text/plain;charset=utf-8," + encodeURI(FPS)
+            );
+            anchor.setAttribute("download", fileName);
+            document.body.appendChild(anchor);
+            anchor.click();
+        }
     }
     cube.rotation.x += 0.01;
     cube.rotation.y += 0.01;

@@ -1,6 +1,6 @@
 import * as THREE from "three/webgpu";
 
-const amountOfCubes = 1000000;
+const amountOfCubes = 300000;
 var matrix = new THREE.Matrix4();
 var position = new THREE.Vector3();
 let frames = 0;
@@ -43,27 +43,31 @@ for (let i = 0; i < amountOfCubes; i++) {
     cube.setMatrixAt(i, matrix);
 }
 
-function animate() {
-    frames++;
-    const time = performance.now();
+window.dispatchEvent(new CustomEvent("allCubesIsLoaded"));
 
-    if (time >= prevTime + 1000) {
-        FPS += math.round((frames * 1000) / (time - prevTime)) + "\n";
-        frames = 0;
-        prevTime = time;
-        amountOfFPS++;
-    }
-    if (amountOfFPS == 5 && stopGetMoreData == true) {
-        stopGetMoreData = false;
-        let anchor = document.createelement("a");
-        let filename = `Three_WebGPU_data.csv`;
-        anchor.setattribute(
-            "href",
-            "data:text/plain;charset=utf-8," + encodeuri(FPS)
-        );
-        anchor.setattribute("download", filename);
-        document.body.appendchild(anchor);
-        anchor.click();
+function animate() {
+    if (FPSTracker == true) {
+        frames++;
+        const time = performance.now();
+
+        if (time >= prevTime + 1000) {
+            FPS += Math.round((frames * 1000) / (time - prevTime)) + "\n";
+            frames = 0;
+            prevTime = time;
+            amountOfFPS++;
+        }
+        if (amountOfFPS == 5 && stopGetMoreData == true) {
+            stopGetMoreData = false;
+            let anchor = document.createElement("a");
+            let fileName = `Three_WebGPU_data.csv`;
+            anchor.setAttribute(
+                "href",
+                "data:text/plain;charset=utf-8," + encodeURI(FPS)
+            );
+            anchor.setAttribute("download", fileName);
+            document.body.appendChild(anchor);
+            anchor.click();
+        }
     }
     cube.rotation.x += 0.01;
     cube.rotation.y += 0.01;
