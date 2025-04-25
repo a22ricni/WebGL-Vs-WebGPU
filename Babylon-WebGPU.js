@@ -3,47 +3,46 @@ import * as BABYLON from "babylonjs";
 const canvas = document.getElementById("renderCanvas");
 const engine = new BABYLON.WebGPUEngine(canvas);
 await engine.initAsync();
+let amountOfCubes = 10000;
 let frames = 0;
 let prevTime = performance.now();
 let FPS = "";
 let amountOfFPS = 0;
 let stopGetMoreData = true;
-let FPSTracker = false
+let FPSTracker = false;
 
 function createScene() {
     const scene = new BABYLON.Scene(engine);
-    let amount = 100000;
 
     scene.createDefaultLight();
 
     const camera = new BABYLON.UniversalCamera(
         "uCamera",
-        new BABYLON.Vector3(0, 1, -50),
+        new BABYLON.Vector3(0, 1, -35),
         scene
     );
 
-    const box = BABYLON.MeshBuilder.CreateBox("myBox", {
-        size: 0.1,
-    });
-
-    let matricesData = new Float32Array(16 * amount);
-
-    for (var i = 0; i < amount; i++) {
-        var matrix = BABYLON.Matrix.Translation(
+    let array = [];
+    for (var i = 0; i < amountOfCubes; i++) {
+        array.push(
+            BABYLON.MeshBuilder.CreateBox("myBox", {
+                size: 0.1,
+            })
+        );
+        array[i].position = new BABYLON.Vector3(
             Math.random() * 20 - 10,
             Math.random() * 20 - 10,
             Math.random() * 20 - 10
         );
-        matrix.copyToArray(matricesData, i * 16);
     }
-
-    box.thinInstanceSetBuffer("matrix", matricesData, 16);
 
     window.dispatchEvent(new CustomEvent("allCubesIsLoaded"));
 
     scene.registerBeforeRender(function () {
-        box.rotation.x += 0.01;
-        box.rotation.y += 0.01;
+        for (var i = 0; i < amountOfCubes; i++) {
+            array[i].rotation.x += 0.01;
+            array[i].rotation.y += 0.01;
+        }
     });
 
     return scene;
