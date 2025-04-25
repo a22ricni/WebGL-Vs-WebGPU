@@ -18,7 +18,7 @@ function createScene() {
 
     const camera = new BABYLON.UniversalCamera(
         "uCamera",
-        new BABYLON.Vector3(0, 1, -35),
+        new BABYLON.Vector3(0, 0, -35),
         scene
     );
 
