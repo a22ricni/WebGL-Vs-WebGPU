@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-const amountOfCubes = 100000;
+const amountOfCubes = 10000;
 var matrix = new THREE.Matrix4();
 var position = new THREE.Vector3();
 let frames = 0;
@@ -8,6 +8,7 @@ let prevTime = performance.now();
 let FPS = "";
 let amountOfFPS = 0;
 let stopGetMoreData = true;
+let FPSTracker = false;
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -22,25 +23,23 @@ const camera = new THREE.PerspectiveCamera(
     10000
 );
 
-camera.position.set(0, 0, 1200);
+camera.position.set(0, 0, 600);
 
 const light = new THREE.HemisphereLight(0xffffff, 0x000000, 4);
 scene.add(light);
 
 const geometry = new THREE.BoxGeometry();
 const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
-const cube = new THREE.InstancedMesh(geometry, material, amountOfCubes);
-scene.add(cube);
 
+let array = [];
 for (let i = 0; i < amountOfCubes; i++) {
-    position.set(
-        Math.random() * 1000 - 500,
-        Math.random() * 1000 - 500,
-        Math.random() * 1000 - 500
+    array.push(new THREE.Mesh(geometry, material));
+    array[i].position.set(
+        Math.random() * 500 - 250,
+        Math.random() * 500 - 250,
+        Math.random() * 500 - 250
     );
-
-    matrix.setPosition(position);
-    cube.setMatrixAt(i, matrix);
+    scene.add(array[i]);
 }
 
 window.dispatchEvent(new CustomEvent("allCubesIsLoaded"));
@@ -69,8 +68,10 @@ function animate() {
             anchor.click();
         }
     }
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
+    for (let i = 0; i < amountOfCubes; i++) {
+        array[i].rotation.x += 0.01;
+        array[i].rotation.y += 0.01;
+    }
     renderer.render(scene, camera);
 }
 
