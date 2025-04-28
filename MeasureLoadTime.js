@@ -6,7 +6,7 @@
 // @author       Me
 // @include      http://localhost:5173/*
 // @grant        none
-// @run-at       document-body
+// @run-at       document-start
 
 // ==/UserScript==
 
