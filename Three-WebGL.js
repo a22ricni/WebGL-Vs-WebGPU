@@ -1,14 +1,9 @@
 import * as THREE from "three";
 
-const amountOfCubes = 10000;
-var matrix = new THREE.Matrix4();
-var position = new THREE.Vector3();
-let frames = 0;
-let prevTime = performance.now();
+const amountOfCubes = 1000;
 let FPS = "";
-let amountOfFPS = 0;
-let stopGetMoreData = true;
-let FPSTracker = false;
+let FPSTracker = true;
+const times = [];
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -44,35 +39,36 @@ for (let i = 0; i < amountOfCubes; i++) {
 
 window.dispatchEvent(new CustomEvent("allCubesIsLoaded"));
 
-function animate() {
-    if (FPSTracker == true) {
-        frames++;
-        const time = performance.now();
+setTimeout(() => {
+    FPSTracker = false;
+    alert("DONE");
+    let anchor = document.createElement("a");
+    let fileName = `Three_WebGL_FPS.csv`;
+    anchor.setAttribute(
+        "href",
+        "data:text/plain;charset=utf-8," + encodeURI(FPS)
+    );
+    anchor.setAttribute("download", fileName);
+    document.body.appendChild(anchor);
+    anchor.click();
+}, 5000);
 
-        if (time >= prevTime + 1000) {
-            FPS += Math.round((frames * 1000) / (time - prevTime)) + "\n";
-            frames = 0;
-            prevTime = time;
-            amountOfFPS++;
-        }
-        if (amountOfFPS == 5 && stopGetMoreData == true) {
-            stopGetMoreData = false;
-            let anchor = document.createElement("a");
-            let fileName = `Three_WebGL_Data.csv`;
-            anchor.setAttribute(
-                "href",
-                "data:text/plain;charset=utf-8," + encodeURI(FPS)
-            );
-            anchor.setAttribute("download", fileName);
-            document.body.appendChild(anchor);
-            anchor.click();
-        }
-    }
+function animate() {
     for (let i = 0; i < amountOfCubes; i++) {
         array[i].rotation.x += 0.01;
         array[i].rotation.y += 0.01;
     }
     renderer.render(scene, camera);
+    if (FPSTracker == true) {
+        window.requestAnimationFrame(() => {
+            const startTime = performance.now();
+            while (times.length > 0 && times[0] <= startTime - 1000) {
+                times.shift();
+            }
+            times.push(startTime);
+            FPS += times.length + "\n";
+        });
+    }
 }
 
 renderer.setAnimationLoop(animate);
