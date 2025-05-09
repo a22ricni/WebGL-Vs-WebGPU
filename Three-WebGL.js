@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 const amountOfCubes = 1000;
 let FPS = "";
-let FPSTracker = true;
+let FPSTracker = false;
 const times = [];
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
