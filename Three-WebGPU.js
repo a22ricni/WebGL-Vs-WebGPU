@@ -24,7 +24,7 @@ camera.position.set(0, 0, 600);
 const light = new THREE.HemisphereLight(0xffffff, 0x000000, 4);
 scene.add(light);
 
-const geometry = new THREE.BoxGeometry();
+const geometry = new THREE.SphereGeometry(2, 10, 10);
 const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
 
 let array = [];

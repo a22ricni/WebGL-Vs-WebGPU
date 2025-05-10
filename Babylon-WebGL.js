@@ -22,8 +22,9 @@ function createScene() {
     let array = [];
     for (var i = 0; i < amountOfCubes; i++) {
         array.push(
-            BABYLON.MeshBuilder.CreateBox("myBox", {
-                size: 0.1,
+            BABYLON.MeshBuilder.CreateSphere("sphere", {
+                segments: 5,
+                diameter: 0.3
             })
         );
         array[i].position = new BABYLON.Vector3(
