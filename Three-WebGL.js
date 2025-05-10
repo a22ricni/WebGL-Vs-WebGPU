@@ -4,6 +4,7 @@ const amountOfCubes = 1000;
 let FPS = "";
 let FPSTracker = false;
 const times = [];
+let counter = 0;
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -39,26 +40,7 @@ for (let i = 0; i < amountOfCubes; i++) {
 
 window.dispatchEvent(new CustomEvent("allCubesIsLoaded"));
 
-setTimeout(() => {
-    FPSTracker = false;
-    alert("DONE");
-    let anchor = document.createElement("a");
-    let fileName = `Three_WebGL_FPS.csv`;
-    anchor.setAttribute(
-        "href",
-        "data:text/plain;charset=utf-8," + encodeURI(FPS)
-    );
-    anchor.setAttribute("download", fileName);
-    document.body.appendChild(anchor);
-    anchor.click();
-}, 5000);
-
 function animate() {
-    for (let i = 0; i < amountOfCubes; i++) {
-        array[i].rotation.x += 0.01;
-        array[i].rotation.y += 0.01;
-    }
-    renderer.render(scene, camera);
     if (FPSTracker == true) {
         window.requestAnimationFrame(() => {
             const startTime = performance.now();
@@ -67,8 +49,28 @@ function animate() {
             }
             times.push(startTime);
             FPS += times.length + "\n";
+            counter++;
+            if (counter >= 500) {
+                FPSTracker = false;
+                alert("DONE");
+                let anchor = document.createElement("a");
+                let fileName = `Three_WebGL_FPS.csv`;
+                anchor.setAttribute(
+                    "href",
+                    "data:text/plain;charset=utf-8," + encodeURI(FPS)
+                );
+                anchor.setAttribute("download", fileName);
+                document.body.appendChild(anchor);
+                anchor.click();
+            }
         });
     }
+
+    for (let i = 0; i < amountOfCubes; i++) {
+        array[i].rotation.x += 0.01;
+        array[i].rotation.y += 0.01;
+    }
+    renderer.render(scene, camera);
 }
 
 renderer.setAnimationLoop(animate);
