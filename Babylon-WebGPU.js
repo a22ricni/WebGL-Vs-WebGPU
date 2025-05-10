@@ -3,13 +3,11 @@ import * as BABYLON from "babylonjs";
 const canvas = document.getElementById("renderCanvas");
 const engine = new BABYLON.WebGPUEngine(canvas);
 await engine.initAsync();
-let amountOfCubes = 10000;
-let frames = 0;
-let prevTime = performance.now();
+let amountOfCubes = 1000;
 let FPS = "";
-let amountOfFPS = 0;
-let stopGetMoreData = true;
 let FPSTracker = false;
+let counter = 0;
+const times = [];
 
 function createScene() {
     const scene = new BABYLON.Scene(engine);
@@ -52,27 +50,28 @@ const scene = createScene();
 
 engine.runRenderLoop(function () {
     if (FPSTracker == true) {
-        frames++;
-        const time = performance.now();
-
-        if (time >= prevTime + 1000) {
-            FPS += Math.round((frames * 1000) / (time - prevTime)) + "\n";
-            frames = 0;
-            prevTime = time;
-            amountOfFPS++;
-        }
-        if (amountOfFPS == 5 && stopGetMoreData == true) {
-            stopGetMoreData = false;
-            let anchor = document.createElement("a");
-            let fileName = `Babylon_WebGPU_Data.csv`;
-            anchor.setAttribute(
-                "href",
-                "data:text/plain;charset=utf-8," + encodeURI(FPS)
-            );
-            anchor.setAttribute("download", fileName);
-            document.body.appendChild(anchor);
-            anchor.click();
-        }
+        window.requestAnimationFrame(() => {
+            const startTime = performance.now();
+            while (times.length > 0 && times[0] <= startTime - 1000) {
+                times.shift();
+            }
+            times.push(startTime);
+            FPS += times.length + "\n";
+            counter++;
+            if (counter >= 500) {
+                FPSTracker = false;
+                alert("DONE");
+                let anchor = document.createElement("a");
+                let fileName = `Babylon_WebGPU_FPS.csv`;
+                anchor.setAttribute(
+                    "href",
+                    "data:text/plain;charset=utf-8," + encodeURI(FPS)
+                );
+                anchor.setAttribute("download", fileName);
+                document.body.appendChild(anchor);
+                anchor.click();
+            }
+        });
     }
     scene.render();
 });
