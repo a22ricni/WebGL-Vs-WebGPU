@@ -4,10 +4,11 @@ const canvas = document.getElementById("renderCanvas");
 const engine = new BABYLON.WebGPUEngine(canvas);
 await engine.initAsync();
 let amountOfCubes = 1000;
+let frames = 0;
 let FPS = "";
-let FPSTracker = false;
+let FPSTracker = true;
+let prevTime = performance.now();
 let counter = 0;
-const times = [];
 
 function createScene() {
     const scene = new BABYLON.Scene(engine);
@@ -51,28 +52,28 @@ const scene = createScene();
 
 engine.runRenderLoop(function () {
     if (FPSTracker == true) {
-        window.requestAnimationFrame(() => {
-            const startTime = performance.now();
-            while (times.length > 0 && times[0] <= startTime - 1000) {
-                times.shift();
-            }
-            times.push(startTime);
-            FPS += times.length + "\n";
+        frames++;
+        const startTime = performance.now();
+
+        if (startTime >= prevTime + 1000) {
+            FPS += Math.round((frames * 1000) / (startTime - prevTime)) + "\n";
+            frames = 0;
+            prevTime = startTime;
             counter++;
-            if (counter >= 500) {
-                FPSTracker = false;
-                alert("DONE");
-                let anchor = document.createElement("a");
-                let fileName = `Babylon_WebGPU_FPS.csv`;
-                anchor.setAttribute(
-                    "href",
-                    "data:text/plain;charset=utf-8," + encodeURI(FPS)
-                );
-                anchor.setAttribute("download", fileName);
-                document.body.appendChild(anchor);
-                anchor.click();
-            }
-        });
+        }
+        if (counter == 120) {
+            FPSTracker = false;
+            alert("DONE!");
+            let anchor = document.createElement("a");
+            let fileName = `Babylon_WebGPU_FPS.csv`;
+            anchor.setAttribute(
+                "href",
+                "data:text/plain;charset=utf-8," + encodeURI(FPS)
+            );
+            anchor.setAttribute("download", fileName);
+            document.body.appendChild(anchor);
+            anchor.click();
+        }
     }
     scene.render();
 });
